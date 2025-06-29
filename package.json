@@ -1,0 +1,107 @@
+{
+  "name": "color-comment",
+  "displayName": "Color Comment",
+  "description": "Color comments with specific tags like i:, todo:, note:, etc.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Color Comment",
+      "properties": {
+        "colorComment.tags": {
+          "type": "object",
+          "default": {
+            "i:": "#ff6b6b",
+            "todo:": "#ffa500",
+            "note:": "#4dabf7",
+            "fixme:": "#ff4757",
+            "hack:": "#9c88ff",
+            "warning:": "#ffd93d"
+          },
+          "description": "Tag-to-color mapping for comment highlighting",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "colorComment.caseSensitive": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether tag matching should be case sensitive"
+        },
+        "colorComment.fontWeight": {
+          "type": "string",
+          "default": "bold",
+          "enum": [
+            "normal",
+            "bold",
+            "lighter",
+            "bolder"
+          ],
+          "description": "Font weight for highlighted comments"
+        },
+        "colorComment.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable comment coloring"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "color-comment.helloWorld",
+        "title": "Hello World",
+        "category": "Color Comment"
+      },
+      {
+        "command": "colorComment.toggleHighlighting",
+        "title": "Toggle Comment Highlighting",
+        "category": "Color Comment"
+      },
+      {
+        "command": "colorComment.refreshHighlighting",
+        "title": "Refresh Comment Highlighting",
+        "category": "Color Comment"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/sinon": "^17.0.4",
+    "@types/vscode": "^1.101.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "chai": "^5.2.0",
+    "esbuild": "^0.25.3",
+    "eslint": "^9.25.1",
+    "npm-run-all": "^4.1.5",
+    "sinon": "^21.0.0",
+    "typescript": "^5.8.3"
+  }
+}
