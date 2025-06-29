@@ -12,6 +12,7 @@ package-lock.json
 
 # VS Code settings
 .vscode/
+.vscode-test/
 
 # OS-specific files
 .DS_Store
