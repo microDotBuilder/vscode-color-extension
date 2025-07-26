@@ -1,6 +1,10 @@
 import * as vscode from "vscode";
 import { logg, loggError, showMessage } from "../logger/logg";
-import { tagColors } from "../consts";
+// We no longer directly import tagColors from consts; ColorConfig handles it.
+// import { tagColors } from "../consts";
+
+// Import your ColorConfig class
+import { ColorConfig } from "../config/color-config"; // Adjust path as necessary
 
 // This function remains excellent as is. No changes needed.
 export async function openColorSettingsForEditing(): Promise<void> {
@@ -10,7 +14,6 @@ export async function openColorSettingsForEditing(): Promise<void> {
     return;
   }
   // For simplicity, we open the settings of the first workspace.
-  // You could enhance this by prompting the user to choose in a multi-root scenario.
   const workspaceFolder = workspaceFolders[0];
   const settingsJsonPath = vscode.Uri.joinPath(
     workspaceFolder.uri,
@@ -19,9 +22,9 @@ export async function openColorSettingsForEditing(): Promise<void> {
   );
 
   try {
-    // Ensure the file exists before opening it by running setup.
-    // The setup is idempotent, so it's safe to run multiple times.
-    await initializeDefaultColors(workspaceFolder);
+    // Ensure the default settings are provisioned (written to settings.json)
+    // before attempting to open the file. ColorConfig handles the logic now.
+    await ColorConfig.provisionDefaultsIfMissing(workspaceFolder.uri);
 
     const document = await vscode.workspace.openTextDocument(settingsJsonPath);
     await vscode.window.showTextDocument(document);
@@ -52,9 +55,13 @@ export async function setUpDefaultFolder(): Promise<void> {
   try {
     // Apply settings to all open workspace folders.
     for (const workspaceFolder of workspaceFolders) {
-      await initializeDefaultColors(workspaceFolder);
+      // ColorConfig now handles checking and writing defaults if missing.
+      await ColorConfig.provisionDefaultsIfMissing(workspaceFolder.uri);
     }
     logg({ message: "Default folder setup completed successfully." });
+    showMessage(
+      "Color Comment: Default settings initialized for your workspace(s)."
+    );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     loggError({ message: `setUpDefaultFolder failed: ${errorMessage}` });
@@ -64,45 +71,5 @@ export async function setUpDefaultFolder(): Promise<void> {
   }
 }
 
-/**
- * Initializes the default color configuration in the settings.json of a
- * specific workspace folder if it's not already present.
- *
- * @param workspaceFolder The workspace folder to configure.
- */
-async function initializeDefaultColors(
-  workspaceFolder: vscode.WorkspaceFolder
-): Promise<void> {
-  // Get the configuration scoped to the specific workspace folder.
-  const config = vscode.workspace.getConfiguration(
-    "colorComment",
-    workspaceFolder.uri
-  );
-
-  // Inspect the configuration at the WorkspaceFolder level.
-  const inspection = config.inspect<typeof tagColors>("tagColors");
-  const hasWorkspaceValue = inspection?.workspaceValue !== undefined;
-
-  // Only write to settings.json if no workspace-specific value is set.
-  // This respects user overrides and avoids unnecessary writes.
-  if (hasWorkspaceValue) {
-    logg({
-      message: `Config already exists for workspace '${workspaceFolder.name}'. Skipping.`,
-    });
-    return;
-  }
-
-  logg({
-    message: `Adding default colors to workspace '${workspaceFolder.name}'.`,
-  });
-
-  // This single command handles everything:
-  // - Creates .vscode/settings.json if they don't exist.
-  // - Adds the "colorComment.tagColors" property.
-  // - Preserves existing settings and comments.
-  await config.update(
-    "tagColors",
-    tagColors,
-    vscode.ConfigurationTarget.WorkspaceFolder
-  );
-}
+// The 'initializeDefaultColors' function is now moved into the ColorConfig class
+// and renamed to `provisionDefaultsIfMissing`. So, it's removed from here.
