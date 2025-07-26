@@ -1,138 +1,127 @@
-# Color Comment
+# Color Comment Extension
 
-A Visual Studio Code extension that highlights tagged comments with different colors to improve code readability and organization.
+A VS Code extension that highlights comments with specific tags using custom colors.
 
 ## Features
 
-- 🎨 **Multi-color comment highlighting** - Different tags get different colors
-- 🔍 **Language support** - Works with JavaScript, TypeScript, and Go
-- ⚡ **Real-time updates** - Colors update as you type
-- 🏷️ **10 predefined tags** - Common development tags ready to use
-- 💡 **Hover information** - See tag information on hover
+- **Customizable Colors**: Edit, rename, and add new comment tags with custom colors
+- **Easy Setup**: Simple commands to setup and manage your color preferences
+- **User-Friendly**: Built-in validation and helpful error messages
 
-## Supported Tags
+## Quick Start
 
-| Tag         | Color       | Purpose                     | Example                              |
-| ----------- | ----------- | --------------------------- | ------------------------------------ |
-| `i:`        | 🔴 Red      | Important information       | `// i: Critical security check`      |
-| `todo:`     | 🟠 Orange   | Tasks to complete           | `// todo: Add input validation`      |
-| `note:`     | 🔵 Blue     | General notes/documentation | `// note: This handles file uploads` |
-| `fixme:`    | 🔴 Dark Red | Bugs that need fixing       | `// fixme: Memory leak in loop`      |
-| `hack:`     | 🟣 Purple   | Temporary solutions         | `// hack: Quick fix for production`  |
-| `warning:`  | 🟡 Yellow   | Warnings/cautions           | `// warning: Deprecated method`      |
-| `review:`   | 🟢 Green    | Code review items           | `// review: Check this logic`        |
-| `debug:`    | 🩷 Pink      | Debug information           | `// debug: Log user actions`         |
-| `temp:`     | ⚪ Gray     | Temporary code              | `// temp: Remove after testing`      |
-| `question:` | 🔵 Cyan     | Questions/doubts            | `// question: Should this be async?` |
+1. **Setup the Extension**:
 
-## Usage
+   - Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+   - Run: `Color Comment: Setup Color Comment Extension`
 
-Simply add any of the supported tags at the beginning of your comments:
+2. **Customize Your Colors**:
 
-### JavaScript/TypeScript
+   - Run: `Color Comment: Edit Color Comment Settings`
+   - This opens your `settings.json` file where you can customize colors
 
-```javascript
-// i: This is important information
-// todo: Implement user authentication
-/* note: This function handles 
-   multi-line operations */
+3. **View Current Settings**:
+   - Run: `Color Comment: Show Current Color Settings`
+   - See all your current color configurations
 
-function example() {
-  // fixme: Handle edge case here
-  return data.process();
+## How to Customize Colors
+
+### Basic Customization
+
+Your colors are stored in `.vscode/settings.json`:
+
+```json
+{
+  "colorComment.tagColors": {
+    "todo:": "#ffa500", // Orange for tasks
+    "note:": "#4dabf7", // Blue for notes
+    "important:": "#ff0000", // Red for important items
+    "bug:": "#ff4757", // Dark red for bugs
+    "temp:": "#a4b0be" // Gray for temporary code
+  }
 }
 ```
 
-### Go
+### What You Can Do
 
-```go
-// i: Critical performance section
-// todo: Add error handling
-func main() {
-    // warning: This will be removed in v2.0
-    fmt.Println("Hello World")
+1. **Change Colors**: Modify hex values (e.g., `"#ffa500"` to `"#00ff00"`)
+2. **Rename Tags**: Change tag names (e.g., `"todo:"` to `"task:"`)
+3. **Add New Tags**: Create custom tags (e.g., `"urgent:": "#ff0000"`)
+4. **Remove Tags**: Delete tags you don't need
+
+### Tag Format Rules
+
+- **Must end with colon**: `"tag:"` ✅, `"tag"` ❌
+- **Use valid hex colors**: `"#ff6b6b"` ✅, `"red"` ❌
+- **Alphanumeric characters only**: `"todo:"` ✅, `"to-do:"` ❌
+
+### Example Customizations
+
+```json
+{
+  "colorComment.tagColors": {
+    "task:": "#ffa500", // Renamed from "todo:"
+    "urgent:": "#ff0000", // New custom tag
+    "note:": "#4dabf7", // Kept original
+    "bug:": "#ff4757", // Renamed from "fixme:"
+    "review:": "#26de81", // Kept original
+    "temp:": "#a4b0be" // Kept original
+  }
 }
 ```
-
-## Supported Languages
-
-- **JavaScript** (`.js`)
-- **TypeScript** (`.ts`)
-- **Go** (`.go`)
-
-Both single-line (`//`) and multi-line (`/* */`) comments are supported.
-
-## Installation
-
-1. Open Visual Studio Code
-2. Go to Extensions (`Ctrl+Shift+X`)
-3. Search for "Color Comment"
-4. Click Install
 
 ## Commands
 
-- **Show Available Tags**: Use `Ctrl+Shift+P` and search for "Show Tags" to see all available tags
+- **Setup Color Comment Extension**: Initial setup
+- **Edit Color Comment Settings**: Open settings for editing
+- **Show Current Color Settings**: View current configuration
+- **Test Color Comment Extension**: Run tests
 
-## Examples
+## Default Colors
 
-### Before
+| Tag         | Color     | Purpose             |
+| ----------- | --------- | ------------------- |
+| `i:`        | `#ff6b6b` | Important/Info      |
+| `todo:`     | `#ffa500` | Tasks to do         |
+| `note:`     | `#4dabf7` | General notes       |
+| `fixme:`    | `#ff4757` | Bugs to fix         |
+| `hack:`     | `#9c88ff` | Temporary solutions |
+| `warning:`  | `#ffd93d` | Warnings/Cautions   |
+| `review:`   | `#26de81` | Code review items   |
+| `debug:`    | `#fd79a8` | Debug information   |
+| `temp:`     | `#a4b0be` | Temporary code      |
+| `question:` | `#00d2d3` | Questions/Doubts    |
+
+## Usage Examples
 
 ```javascript
-// This is important
-// TODO: Fix this later
-// NOTE: Check documentation
-// BUG: Memory issue here
+// todo: This needs to be implemented
+function processData() {
+  // note: This is a temporary solution
+  // fixme: Handle edge case when data is null
+  // hack: Quick fix for now
+  // temp: Remove this later
+}
 ```
 
-### After
+## Troubleshooting
 
-With Color Comment extension, each tagged comment gets its distinct color:
+### Common Issues
 
-- `// i: This is important` → **Red**
-- `// todo: Fix this later` → **Orange**
-- `// note: Check documentation` → **Blue**
-- `// fixme: Memory issue here` → **Dark Red**
+1. **Colors not showing**: Run the setup command first
+2. **Invalid format errors**: Ensure tags end with `:` and colors are hex format
+3. **Settings not saving**: Check file permissions for `.vscode/settings.json`
 
-## Benefits
+### Validation
 
-- **Better Code Organization** - Quickly identify different types of comments
-- **Improved Readability** - Color coding makes comments stand out
-- **Team Collaboration** - Standardized comment tags across your team
-- **Faster Code Review** - Easily spot review items and todos
-- **Bug Tracking** - Highlight known issues with `fixme:` tags
+The extension validates your settings and will show helpful error messages if:
 
-## Configuration
+- Tag format is incorrect
+- Color format is invalid
+- JSON syntax is malformed
 
-Currently, the extension works out of the box with predefined colors. Future versions will include customizable colors and tags.
+## Development
 
-## Requirements
-
-- Visual Studio Code 1.101.0 or higher
-- Files with JavaScript, TypeScript, or Go language mode
-
-## Known Issues
-
-- Only supports JavaScript, TypeScript, and Go files currently
-- Tags must be at the beginning of comments (after `//` or `/*`)
-- Case sensitive tag matching
-
-## Release Notes
-
-### 0.0.1
-
-- Initial release
-- Support for 10 predefined tags
-- JavaScript, TypeScript, and Go language support
-- Real-time comment highlighting
-
-## Contributing
-
-Found a bug or want to request a feature? Please create an issue on our GitHub repository.
-
-## License
-
-This extension is licensed under the MIT License.
-
----
-
-**Enjoy coding with colorful comments!** 🎨✨
+- Built with TypeScript
+- Uses VS Code Extension API
+- Supports workspace-level configuration

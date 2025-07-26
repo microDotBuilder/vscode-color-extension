@@ -1,4 +1,3 @@
-// Configuration constants
 export const CONFIG = {
   MAX_DOCUMENT_SIZE: 1000000, // 1MB limit
   MAX_ITERATIONS: 10000, // Prevent infinite loops
