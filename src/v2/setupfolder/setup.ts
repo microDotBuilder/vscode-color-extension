@@ -1,12 +1,9 @@
 import * as vscode from "vscode";
 import { logg, loggError, showMessage } from "../logger/logg";
-// We no longer directly import tagColors from consts; ColorConfig handles it.
-// import { tagColors } from "../consts";
 
-// Import your ColorConfig class
-import { ColorConfig } from "../config/color-config"; // Adjust path as necessary
+import { ColorConfig } from "../config/color-config";
+import { LanguageService } from "../main/language-service";
 
-// This function remains excellent as is. No changes needed.
 export async function openColorSettingsForEditing(): Promise<void> {
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (!workspaceFolders || workspaceFolders.length === 0) {
@@ -62,6 +59,11 @@ export async function setUpDefaultFolder(): Promise<void> {
     showMessage(
       "Color Comment: Default settings initialized for your workspace(s)."
     );
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      const result = LanguageService.getLanguageInfo(editor.document);
+      logg({ message: `Supported languages: ${result}` });
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     loggError({ message: `setUpDefaultFolder failed: ${errorMessage}` });
