@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import { loggError } from "../logger/logg";
-import { CONFIG } from "../consts";
+import { CONFIG, watchLanguages } from "../consts";
 import { ColorConfig } from "../config/color-config";
 import { TagFinder } from "./tag-finder";
 import { DecorationManager } from "./decoration-manager";
+import { LanguageService } from "./language-service";
 
 /**
  * Clears all existing decorations for an editor.
@@ -36,40 +37,19 @@ export function findTaggedComments(
     return [];
   }
 
-  // Get language info
-  const languageId = document.languageId;
-  const lines = document.getText().split("\n");
-
-  // Check if this language is supported
-  const supportedLanguages = [
-    "javascript",
-    "typescript",
-    "typescriptreact",
-    "javascriptreact",
-    "java",
-    "c",
-    "c++",
-    "c#",
-    "go",
-    "swift",
-    "rust",
-    "scala",
-    "python",
-    "elixir",
-    "haskell",
-    "sql",
-    "prolog",
-    "html",
-    "css",
-    "json",
-  ];
-
-  if (!supportedLanguages.includes(languageId)) {
+  // Get language info using LanguageService
+  const languageInfo = LanguageService.getLanguageInfo(document);
+  if (!languageInfo) {
     return [];
   }
 
-  // Find tags in lines
-  const tagMatches = TagFinder.findTagsInLines(lines, /\s*\/\//g); // Default to JS-style comments
+  const { languageConfig, lines } = languageInfo;
+
+  // Find tags in lines using the appropriate comment prefix regex
+  const tagMatches = TagFinder.findTagsInLines(
+    lines,
+    languageConfig.commentPrefixRegex
+  );
 
   // Convert to decoration options
   tagMatches.forEach((matchesOnLine) => {
@@ -97,6 +77,17 @@ export function isSupportedTag(tag: string): boolean {
  */
 export function validateTag(tag: string): boolean {
   return TagFinder.validateTag(tag);
+}
+
+/**
+ * Checks if a language is supported by checking if it exists in the watchLanguages constant.
+ * This utility function uses the dynamic watchLanguages source instead of hardcoded arrays.
+ *
+ * @param languageId The language ID to check
+ * @returns True if the language is supported, false otherwise
+ */
+export function isLanguageSupported(languageId: string): boolean {
+  return languageId in watchLanguages;
 }
 
 // Export interfaces for backward compatibility

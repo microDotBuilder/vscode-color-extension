@@ -1,4 +1,5 @@
 import { LanguageService } from "../v2/main/language-service";
+import { watchLanguages } from "../v2/consts";
 
 // Simple test runner for demonstration
 function runTests() {
@@ -28,12 +29,13 @@ function runTests() {
     return Array.isArray(languages) && languages.length > 0;
   });
 
-  test("getSupportedLanguageIds should include common languages", () => {
+  test("getSupportedLanguageIds should include all watchLanguages", () => {
     const languages = LanguageService.getSupportedLanguageIds();
-    return (
-      languages.includes("javascript") &&
-      languages.includes("typescript") &&
-      languages.includes("python")
+    const watchLanguageIds = Object.keys(watchLanguages);
+
+    // Check that all languages in watchLanguages are included in supported languages
+    return watchLanguageIds.every((languageId) =>
+      languages.includes(languageId)
     );
   });
 

@@ -143,6 +143,9 @@ export const watchLanguages = {
     commentPrefixRegex: /\s*\/\*/g, // ADDED 'g' FLAG
     commentSuffix: "*/",
   },
+  // --- JSON-with-comments (JSONC) format - NOT strict JSON ---
+  // This configuration supports JSON files that include comments (like .jsonc files)
+  // which are commonly used in VS Code settings and other development tools
   json: {
     fileExtension: ".json",
     commentPrefix: "/*",
